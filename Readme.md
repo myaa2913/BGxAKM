@@ -1,7 +1,9 @@
 #### WORKFLOW
 1. jobidXskillid.sql: create a unique bgtjobid X skill_id TEMP_SKILLS sql table 
 
-2. ext_wage_skill.sql: extract a unique bgtjobid X skillcluster csv with nonmissing data from SQL tables MAINTEXT and TEMP_SKILLS. Also excludes internship ads.
+2. skill_stats.sql: counts the number of unique skills for each job post, then calculates the mean and std of this number by soc,year
+
+3. ext_wage_skill.sql: extract a unique bgtjobid X skillcluster csv with nonmissing data from SQL tables MAINTEXT and TEMP_SKILLS. Also excludes internship ads.
 
 
 
