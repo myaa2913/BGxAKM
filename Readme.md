@@ -3,7 +3,9 @@
 
 2. skill_stats.sql: counts the number of unique skills for each job post, then calculates the mean and std of this number by soc,year
 
-3. ext_wage_skill.sql: extract a unique bgtjobid X skillcluster csv with nonmissing data from SQL tables MAINTEXT and TEMP_SKILLS. Also excludes internship ads.
+3. variants at different levels of skill granularity. All extract a unique bgtjobid X skill csv with nonmissing data from SQL tables MAINTEXT and TEMP_SKILLS. Also excludes internship ads.
+- ext_wage_skillcluster.sql
+- ext_wage_skillclusterfamily.sql
 
 
 
