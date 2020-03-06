@@ -5,9 +5,11 @@ log off
 
 import delimited using "/ifs/gsb/mcorrito/jobidXskillclusterfamily_wage.csv", clear 
 
+drop degree
+
 *drop missing values
 foreach var in soc skillclusterfamily fuzzyemployer {
-    drop if `var' == .
+    drop if `var' == ""
 }
 drop if msa==-999 | msa==. 
 
@@ -87,6 +89,8 @@ g ln_wage = ln((minsalary + maxsalary) / 2)
 sort bgtjobid
 compress
 saveold master_skillclusterfamily.dta,replace
+
+export delimited using master_skillclusterfamily.csv, replace
 
 log close
 

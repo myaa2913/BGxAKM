@@ -1,0 +1,183 @@
+-------------------------------------------------------------------------------------------------------------------------------------
+      name:  <unnamed>
+       log:  /usr/local/ifs/gsb/mcorrito/prep_analysis.log
+  log type:  text
+ opened on:   5 Mar 2020, 16:57:29
+
+. log off
+      name:  <unnamed>
+       log:  /usr/local/ifs/gsb/mcorrito/prep_analysis.log
+  log type:  text
+ paused on:   5 Mar 2020, 16:57:29
+-------------------------------------------------------------------------------------------------------------------------------------
+-------------------------------------------------------------------------------------------------------------------------------------
+      name:  <unnamed>
+       log:  /usr/local/ifs/gsb/mcorrito/prep_analysis.log
+  log type:  text
+resumed on:   5 Mar 2020, 16:57:47
+
+. preserve
+
+. keep orgid rec_per_firm
+
+. duplicates drop
+
+Duplicates in terms of all variables
+
+(9,195,459 observations deleted)
+
+. kdensity rec_per_firm
+
+. graph export "kdens_rec_per_firm.eps",replace
+(file kdens_rec_per_firm.eps written in EPS format)
+
+. sum rec_per_firm,d
+
+                        rec_per_firm
+-------------------------------------------------------------
+      Percentiles      Smallest
+ 1%           10             10
+ 5%           10             10
+10%           11             10       Obs              75,248
+25%           14             10       Sum of Wgt.      75,248
+
+50%           23                      Mean            130.925
+                        Largest       Std. Dev.      1206.879
+75%           56          49921
+90%          174          66220       Variance        1456556
+95%          378         109069       Skewness       89.31064
+99%         1696         208770       Kurtosis       13107.42
+
+. restore
+
+. 
+. preserve
+
+. keep bundleid rec_per_bundle
+
+. duplicates drop
+
+Duplicates in terms of all variables
+
+(9,228,383 observations deleted)
+
+. kdensity rec_per_bundle
+
+. graph export "kdens_rec_per_bundle.eps",replace
+(file kdens_rec_per_bundle.eps written in EPS format)
+
+. sum rec_per_bundle,d
+
+                       rec_per_bundle
+-------------------------------------------------------------
+      Percentiles      Smallest
+ 1%           10             10
+ 5%           10             10
+10%           11             10       Obs              42,324
+25%           14             10       Sum of Wgt.      42,324
+
+50%           23                      Mean           219.0414
+                        Largest       Std. Dev.      3976.274
+75%           57         186460
+90%          175         233434       Variance       1.58e+07
+95%          404         336853       Skewness       86.88891
+99%         2507         544150       Kurtosis        10002.4
+
+. restore
+
+. log off
+      name:  <unnamed>
+       log:  /usr/local/ifs/gsb/mcorrito/prep_analysis.log
+  log type:  text
+ paused on:   5 Mar 2020, 16:58:32
+-------------------------------------------------------------------------------------------------------------------------------------
+-------------------------------------------------------------------------------------------------------------------------------------
+      name:  <unnamed>
+       log:  /usr/local/ifs/gsb/mcorrito/prep_analysis.log
+  log type:  text
+resumed on:   5 Mar 2020, 17:00:02
+
+. sort orgid
+
+. merge orgid using "`num_msa'"
+(note: you are using old merge syntax; see [D] merge for new syntax)
+variable orgid does not uniquely identify observations in the master data
+
+. tab _merge
+
+     _merge |      Freq.     Percent        Cum.
+------------+-----------------------------------
+          3 |  9,270,707      100.00      100.00
+------------+-----------------------------------
+      Total |  9,270,707      100.00
+
+. keep if _merge==3
+(0 observations deleted)
+
+. drop _merge
+
+. sort orgid
+
+. merge orgid using "`num_soc'"
+(note: you are using old merge syntax; see [D] merge for new syntax)
+variable orgid does not uniquely identify observations in the master data
+
+. tab _merge
+
+     _merge |      Freq.     Percent        Cum.
+------------+-----------------------------------
+          3 |  9,270,707      100.00      100.00
+------------+-----------------------------------
+      Total |  9,270,707      100.00
+
+. keep if _merge==3
+(0 observations deleted)
+
+. drop _merge
+
+. log off
+      name:  <unnamed>
+       log:  /usr/local/ifs/gsb/mcorrito/prep_analysis.log
+  log type:  text
+ paused on:   5 Mar 2020, 17:00:10
+-------------------------------------------------------------------------------------------------------------------------------------
+-------------------------------------------------------------------------------------------------------------------------------------
+      name:  <unnamed>
+       log:  /usr/local/ifs/gsb/mcorrito/prep_analysis.log
+  log type:  text
+resumed on:   5 Mar 2020, 17:00:11
+
+. distinct orgid
+
+       |        Observations
+       |      total   distinct
+-------+----------------------
+ orgid |    8497175      55800
+
+. distinct bundleid
+
+          |        Observations
+          |      total   distinct
+----------+----------------------
+ bundleid |    8497175      42222
+
+. distinct soc
+
+       |        Observations
+       |      total   distinct
+-------+----------------------
+   soc |    8497175        827
+
+. distinct msa
+
+       |        Observations
+       |      total   distinct
+-------+----------------------
+   msa |    8497175        929
+
+. log off
+      name:  <unnamed>
+       log:  /usr/local/ifs/gsb/mcorrito/prep_analysis.log
+  log type:  text
+ paused on:   5 Mar 2020, 17:00:39
+-------------------------------------------------------------------------------------------------------------------------------------

@@ -9,6 +9,7 @@
 - ext_wage_skillcluster.sql
 - ext_wage_skillclusterfamily.sql
 
+5. create_master.do: creates master dta and csv files for the AKM analysis
 
 
 
