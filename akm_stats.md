@@ -11,4 +11,5 @@
 | 2016          | 4             | 8         | 40        | 71         | 81               | 1.1     |
 | 2017          | 4             | 9         | 44        | 68         | 80               | 0.9     |
 | 2018          | 9             | 12        | 50        | 71         | 83               | 2.3     |
-[Notes. Base controls are education and experience requirements and year fixed effects in the pooled model, and only education and experience requirements in the by-year models.] 
+
+Notes. Base controls are education and experience requirements and year fixed effects in the pooled model, and only education and experience requirements in the by-year models.
