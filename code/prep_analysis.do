@@ -10,10 +10,10 @@ use master_skillclusterfamily.dta,replace
 *keep if random <= 0.05
 
 /* drop low freq firms */
-bysort orgid: g rec_per_firm = _N
+bysort orgid year: g rec_per_firm = _N
 drop if rec_per_firm < 10
 
-bysort bundleid: g rec_per_bundle = _N
+bysort bundleid year: g rec_per_bundle = _N
 drop if rec_per_bundle < 10
 
 log on
