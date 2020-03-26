@@ -45,13 +45,21 @@ for yr in years:
     i_skill = sparse.coo_matrix(i_skill)
 
     i_msa = pd.get_dummies(df_sub['msa'],sparse=True)
+    msa_names = pd.DataFrame(i_msa.columns.values) 
+    num_msa = i_msa.shape[1]
     i_msa = sparse.coo_matrix(i_msa)
-    i_year = pd.get_dummies(df_sub['year'],sparse=True)
-    i_year = sparse.coo_matrix(i_year)
 
+    #i_year = pd.get_dummies(df_sub['year'],sparse=True)
+    #i_year = sparse.coo_matrix(i_year)
 
+    #edu and exp
+    edu = sparse.coo_matrix(df_sub['edu'])
+    edu = sparse.coo_matrix.transpose(edu)
+    exp = sparse.coo_matrix(df_sub['exp'])
+    exp = sparse.coo_matrix.transpose(exp)
+    
     #concat
-    X = sparse.hstack([i_soc,i_org,i_skill,i_msa,i_year])
+    X = sparse.hstack([i_soc,i_org,i_skill,i_msa,edu,exp])
     #df_concat = pd.concat([i_soc,i_org,i_skill,i_msa,i_year,df['edu'],df['exp']],axis=1)
 
     #sklearn ols
@@ -70,22 +78,26 @@ for yr in years:
     org_betas.rename(columns={0:'org_FEs'},inplace=True)
     org_names.rename(columns={0:'orgid'},inplace=True)
     org_FEs = pd.concat([org_names,org_betas],axis=1)
-
+    
     skill_betas = pd.DataFrame(reg.coef_[(num_soc+num_org):(num_soc+num_org+num_skill)])
     skill_betas.rename(columns={0:'skill_FEs'},inplace=True)
     skill_names.rename(columns={0:'bundleid'},inplace=True)
     skill_FEs = pd.concat([skill_names,skill_betas],axis=1)
-
-    #merge on the FEs to the final dataframe
-    df_final = df_sub[['year','soc','orgid','bundleid']]
-    df_final = df_final.drop_duplicates()
-
-    print(df_final.shape)
-    df_final = df_final.merge(soc_FEs,on='soc',how='left')
-    print(df_final.shape)
-    df_final = df_final.merge(org_FEs,on='orgid',how='left')
-    print(df_final.shape)
-    df_final = df_final.merge(skill_FEs,on='bundleid',how='left')
-    print(df_final.shape)
     
-    df_final.to_csv('complete_FEs_' + str(yr) + '.csv',index=False)
+    msa_betas = pd.DataFrame(reg.coef_[(num_soc+num_org+num_skill):(num_soc+num_org+num_skill+num_msa)])
+    msa_betas.rename(columns={0:'msa_FEs'},inplace=True)
+    msa_names.rename(columns={0:'msa'},inplace=True)
+    msa_FEs = pd.concat([msa_names,msa_betas],axis=1)
+    
+    #merge on the FEs to the final dataframe
+    df_sub = df_sub.merge(soc_FEs,on='soc',how='left')
+    df_sub = df_sub.merge(org_FEs,on='orgid',how='left')
+    df_sub = df_sub.merge(skill_FEs,on='bundleid',how='left')
+    df_sub = df_sub.merge(msa_FEs,on='msa',how='left')
+
+    #merge on the FEs and coefficients  
+    df_sub['intercept'] = reg.intercept_
+    df_sub['edu_beta'] = reg.coef_[-2]    
+    df_sub['exp_beta'] = reg.coef_[-1]        
+    
+    df_sub.to_csv('complete_FEs_' + str(yr) + '.csv',index=False)
