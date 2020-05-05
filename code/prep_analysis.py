@@ -69,10 +69,12 @@ del df['skillcluster']
 
 
 years = [2010,2011,2012,2013,2014,2015,2016,2017,2018]
+#years = [2018]
 
 for yr in years:
 
     df_sub = df[df['year']==yr]
+    #del df   #comment this out later -- just trying to fit the 2018 model into memory
 
     print(df_sub.shape)
 
@@ -83,6 +85,7 @@ for yr in years:
     msa_per_firm = msa_per_firm[msa_per_firm['msa_per_firm'] > 1]
     df_sub = df_sub.merge(msa_per_firm, on='orgid',how='right')
     del df_sub['msa_per_firm']
+    del msa_per_firm
 
     soc_per_firm = df_sub[['orgid','soc']].drop_duplicates()
     soc_per_firm = soc_per_firm.groupby(['orgid'], as_index=False).count()
@@ -90,14 +93,16 @@ for yr in years:
     soc_per_firm = soc_per_firm[soc_per_firm['soc_per_firm'] > 1]
     df_sub = df_sub.merge(soc_per_firm, on='orgid',how='right')
     del df_sub['soc_per_firm']
+    del soc_per_firm
 
     #drop firms with less than 10 job ads
-    ads_per_firm = df[['bgtjobid','orgid']].drop_duplicates()
+    ads_per_firm = df_sub[['bgtjobid','orgid']].drop_duplicates()
     ads_per_firm = ads_per_firm.groupby(['orgid'], as_index=False).count()
     ads_per_firm = ads_per_firm.rename(columns={"bgtjobid":"ads_per_firm"})
     ads_per_firm = ads_per_firm[ads_per_firm['ads_per_firm'] > 10]    
     df_sub = df_sub.merge(ads_per_firm, on='orgid',how='right')
     del df_sub['ads_per_firm']
+    del ads_per_firm
     
     #drop skills that appear less than 10 times
     skill_freq = df_sub[['bgtjobid','skillclusterid']].drop_duplicates()
@@ -106,6 +111,7 @@ for yr in years:
     skill_freq = skill_freq[skill_freq['skill_freq'] > 10]    
     df_sub = df_sub.merge(skill_freq, on='skillclusterid',how='right')
     del df_sub['skill_freq']
+    del skill_freq
  
     #create dummies
     i_soc = pd.get_dummies(df_sub['soc'],sparse=True)
