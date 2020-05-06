@@ -101,20 +101,20 @@ for yr in years:
     del df_sub['soc_per_firm']
     del soc_per_firm
 
-    #drop firms with less than 10 job ads
+    #drop firms with less than 20 job ads
     ads_per_firm = df_sub[['bgtjobid','orgid']].drop_duplicates()
     ads_per_firm = ads_per_firm.groupby(['orgid'], as_index=False).count()
     ads_per_firm = ads_per_firm.rename(columns={"bgtjobid":"ads_per_firm"})
-    ads_per_firm = ads_per_firm[ads_per_firm['ads_per_firm'] > 10]    
+    ads_per_firm = ads_per_firm[ads_per_firm['ads_per_firm'] > 20]    
     df_sub = df_sub.merge(ads_per_firm, on='orgid',how='right')
     del df_sub['ads_per_firm']
     del ads_per_firm
     
-    #drop skills that appear less than 10 times
+    #drop skills that appear less than 20 times
     skill_freq = df_sub[['bgtjobid','skillclusterid']].drop_duplicates()
     skill_freq = skill_freq.groupby(['skillclusterid'], as_index=False).count()
     skill_freq = skill_freq.rename(columns={"bgtjobid":"skill_freq"})
-    skill_freq = skill_freq[skill_freq['skill_freq'] > 10]    
+    skill_freq = skill_freq[skill_freq['skill_freq'] > 20]    
     df_sub = df_sub.merge(skill_freq, on='skillclusterid',how='right')
     del df_sub['skill_freq']
     del skill_freq
@@ -191,7 +191,7 @@ for yr in years:
     df_sub['edu_beta'] = reg.coef_[-2]    
     df_sub['exp_beta'] = reg.coef_[-1]        
     
-    df_sub.to_csv('~/bg_skills/BGxAKM/temp/complete_FEs_' + str(yr) + '.csv',index=False)
+    df_sub.to_csv('~/bg_skills/BGxAKM/temp/complete_FEs_' + str(yr) + '_20.csv',index=False)
 
 
 
