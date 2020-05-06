@@ -5,7 +5,7 @@ import numpy as np
 from sklearn.linear_model import LinearRegression
 from scipy import sparse
 
-df = pd.read_csv("~/bg_skills/BGxAKM/temp/jobidXskill_wage.csv",
+df = pd.read_csv("~/bg_skills/BGxAKM/temp/jobidXskillcluster_wage.csv",
                  usecols=['bgtjobid',
                           'soc',
                           'year',
@@ -26,7 +26,14 @@ df = pd.read_csv("~/bg_skills/BGxAKM/temp/jobidXskill_wage.csv",
                          'fuzzyemployer':'str'})
 
 #drop if various values are missing
-df = df.dropna()
+df = df.dropna(subset=['bgtjobid',
+                       'soc',
+                       'year',
+                       'skillcluster',
+                       'minsalary',
+                       'maxsalary',
+                       'msa',
+                       'fuzzyemployer'])
 df = df[df['msa']!=-999]
 
 #recode missing edu and exp values to 0 per Kahn/Deming
@@ -69,7 +76,6 @@ del df['skillcluster']
 
 
 years = [2010,2011,2012,2013,2014,2015,2016,2017,2018]
-#years = [2018]
 
 for yr in years:
 
