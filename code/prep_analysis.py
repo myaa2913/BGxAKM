@@ -91,7 +91,7 @@ for yr in years:
     msa_per_firm = msa_per_firm[msa_per_firm['msa_per_firm'] > 1]
     df_sub = df_sub.merge(msa_per_firm, on='orgid',how='right')
     del df_sub['msa_per_firm']
-    del msa_per_firm
+    #del msa_per_firm
 
     soc_per_firm = df_sub[['orgid','soc']].drop_duplicates()
     soc_per_firm = soc_per_firm.groupby(['orgid'], as_index=False).count()
@@ -99,7 +99,7 @@ for yr in years:
     soc_per_firm = soc_per_firm[soc_per_firm['soc_per_firm'] > 1]
     df_sub = df_sub.merge(soc_per_firm, on='orgid',how='right')
     del df_sub['soc_per_firm']
-    del soc_per_firm
+    #del soc_per_firm
 
     #drop firms with less than 20 job ads
     ads_per_firm = df_sub[['bgtjobid','orgid']].drop_duplicates()
@@ -108,7 +108,7 @@ for yr in years:
     ads_per_firm = ads_per_firm[ads_per_firm['ads_per_firm'] > 20]    
     df_sub = df_sub.merge(ads_per_firm, on='orgid',how='right')
     del df_sub['ads_per_firm']
-    del ads_per_firm
+    #del ads_per_firm
     
     #drop skills that appear less than 20 times
     skill_freq = df_sub[['bgtjobid','skillclusterid']].drop_duplicates()
@@ -117,14 +117,21 @@ for yr in years:
     skill_freq = skill_freq[skill_freq['skill_freq'] > 20]    
     df_sub = df_sub.merge(skill_freq, on='skillclusterid',how='right')
     del df_sub['skill_freq']
-    del skill_freq
- 
+    #del skill_freq
+
+    #calculate bgtjobid frequency weights (a bgtjobid appearing three times is weighted 1/3 for each observation)
+    bgtjobid_freq = df_sub[['bgtjobid']]
+    bgtjobid_freq['ifw'] = 1
+    bgtjobid_freq = bgtjobid_freq.groupby(['bgtjobid'], as_index=False).count()
+    bgtjobid_freq['ifw'] = (float(1) / bgtjobid_freq['ifw'])  
+    df_sub = df_sub.merge(bgtjobid_freq, on='bgtjobid',how='right')
+    
     #create dummies
     i_soc = pd.get_dummies(df_sub['soc'],sparse=True)
     soc_names = pd.DataFrame(i_soc.columns.values)
     num_soc = i_soc.shape[1]
     i_soc = sparse.coo_matrix(i_soc)
-
+    
     i_org = pd.get_dummies(df_sub['orgid'],sparse=True)
     org_names = pd.DataFrame(i_org.columns.values)
     num_org = i_org.shape[1]
@@ -148,9 +155,17 @@ for yr in years:
     edu = sparse.coo_matrix.transpose(edu)
     exp = sparse.coo_matrix(df_sub['exp'])
     exp = sparse.coo_matrix.transpose(exp)
-    
+
+    #weight the observations
     #concat
     X = sparse.hstack([i_soc,i_org,i_skill,i_msa,edu,exp])
+    X = sparse.csr_matrix(X)
+
+    ifw = sparse.csr_matrix(df_sub['ifw'])
+    for i in xrange(ifw.shape[1]):
+        X[i,] = X[i,] * ifw[0,i]
+    
+    X = sparse.coo_matrix(X)
     #df_concat = pd.concat([i_soc,i_org,i_skill,i_msa,i_year,df['edu'],df['exp']],axis=1)
 
     #sklearn ols
@@ -191,7 +206,7 @@ for yr in years:
     df_sub['edu_beta'] = reg.coef_[-2]    
     df_sub['exp_beta'] = reg.coef_[-1]        
     
-    df_sub.to_csv('~/bg_skills/BGxAKM/temp/complete_FEs_' + str(yr) + '_20.csv',index=False)
+    df_sub.to_csv('~/bg_skills/BGxAKM/temp/complete_FEs_' + str(yr) + '_20_ifw.csv',index=False)
 
 
 
