@@ -64,15 +64,15 @@ df = df.drop_duplicates(subset=['bgtjobid','skillclusterid'])
 #COMMENT OUT LATER
 #df = pd.read_csv('~/bg_skills/BGxAKM/temp/wage_long.csv',nrows=1000000)
 
-#save orgid orgname crosswalk
-orgid_cross = df[['orgid','fuzzyemployer']].drop_duplicates()
-orgid_cross.to_csv('~/bg_skills/BGxAKM/temp/orgid_cross.csv',index=False)
-del df['fuzzyemployer']
+# #save orgid orgname crosswalk
+# orgid_cross = df[['orgid','fuzzyemployer']].drop_duplicates()
+# orgid_cross.to_csv('~/bg_skills/BGxAKM/temp/orgid_cross.csv',index=False)
+# del df['fuzzyemployer']
 
-#save skillid skillcluster crosswalk
-skillclusterid_cross = df[['skillclusterid','skillcluster']].drop_duplicates()
-skillclusterid_cross.to_csv('~/bg_skills/BGxAKM/temp/skillclusterid_cross.csv',index=False)
-del df['skillcluster']
+# #save skillid skillcluster crosswalk
+# skillclusterid_cross = df[['skillclusterid','skillcluster']].drop_duplicates()
+# skillclusterid_cross.to_csv('~/bg_skills/BGxAKM/temp/skillclusterid_cross.csv',index=False)
+# del df['skillcluster']
 
 
 years = [2010,2011,2012,2013,2014,2015,2016,2017,2018]
@@ -84,40 +84,40 @@ for yr in years:
 
     print(df_sub.shape)
 
-    #drop firms in only one msa or w only one soc code
-    msa_per_firm = df_sub[['orgid','msa']].drop_duplicates()
-    msa_per_firm = msa_per_firm.groupby(['orgid'], as_index=False).count()
-    msa_per_firm = msa_per_firm.rename(columns={"msa":"msa_per_firm"})
-    msa_per_firm = msa_per_firm[msa_per_firm['msa_per_firm'] > 1]
-    df_sub = df_sub.merge(msa_per_firm, on='orgid',how='right')
-    del df_sub['msa_per_firm']
-    #del msa_per_firm
+    # #drop firms in only one msa or w only one soc code
+    # msa_per_firm = df_sub[['orgid','msa']].drop_duplicates()
+    # msa_per_firm = msa_per_firm.groupby(['orgid'], as_index=False).count()
+    # msa_per_firm = msa_per_firm.rename(columns={"msa":"msa_per_firm"})
+    # msa_per_firm = msa_per_firm[msa_per_firm['msa_per_firm'] > 1]
+    # df_sub = df_sub.merge(msa_per_firm, on='orgid',how='right')
+    # del df_sub['msa_per_firm']
+    # #del msa_per_firm
 
-    soc_per_firm = df_sub[['orgid','soc']].drop_duplicates()
-    soc_per_firm = soc_per_firm.groupby(['orgid'], as_index=False).count()
-    soc_per_firm = soc_per_firm.rename(columns={"soc":"soc_per_firm"})
-    soc_per_firm = soc_per_firm[soc_per_firm['soc_per_firm'] > 1]
-    df_sub = df_sub.merge(soc_per_firm, on='orgid',how='right')
-    del df_sub['soc_per_firm']
-    #del soc_per_firm
+    # soc_per_firm = df_sub[['orgid','soc']].drop_duplicates()
+    # soc_per_firm = soc_per_firm.groupby(['orgid'], as_index=False).count()
+    # soc_per_firm = soc_per_firm.rename(columns={"soc":"soc_per_firm"})
+    # soc_per_firm = soc_per_firm[soc_per_firm['soc_per_firm'] > 1]
+    # df_sub = df_sub.merge(soc_per_firm, on='orgid',how='right')
+    # del df_sub['soc_per_firm']
+    # #del soc_per_firm
 
-    #drop firms with less than 20 job ads
-    ads_per_firm = df_sub[['bgtjobid','orgid']].drop_duplicates()
-    ads_per_firm = ads_per_firm.groupby(['orgid'], as_index=False).count()
-    ads_per_firm = ads_per_firm.rename(columns={"bgtjobid":"ads_per_firm"})
-    ads_per_firm = ads_per_firm[ads_per_firm['ads_per_firm'] > 20]    
-    df_sub = df_sub.merge(ads_per_firm, on='orgid',how='right')
-    del df_sub['ads_per_firm']
-    #del ads_per_firm
+    # #drop firms with less than 20 job ads
+    # ads_per_firm = df_sub[['bgtjobid','orgid']].drop_duplicates()
+    # ads_per_firm = ads_per_firm.groupby(['orgid'], as_index=False).count()
+    # ads_per_firm = ads_per_firm.rename(columns={"bgtjobid":"ads_per_firm"})
+    # ads_per_firm = ads_per_firm[ads_per_firm['ads_per_firm'] > 20]    
+    # df_sub = df_sub.merge(ads_per_firm, on='orgid',how='right')
+    # del df_sub['ads_per_firm']
+    # #del ads_per_firm
     
-    #drop skills that appear less than 20 times
-    skill_freq = df_sub[['bgtjobid','skillclusterid']].drop_duplicates()
-    skill_freq = skill_freq.groupby(['skillclusterid'], as_index=False).count()
-    skill_freq = skill_freq.rename(columns={"bgtjobid":"skill_freq"})
-    skill_freq = skill_freq[skill_freq['skill_freq'] > 20]    
-    df_sub = df_sub.merge(skill_freq, on='skillclusterid',how='right')
-    del df_sub['skill_freq']
-    #del skill_freq
+    # #drop skills that appear less than 20 times
+    # skill_freq = df_sub[['bgtjobid','skillclusterid']].drop_duplicates()
+    # skill_freq = skill_freq.groupby(['skillclusterid'], as_index=False).count()
+    # skill_freq = skill_freq.rename(columns={"bgtjobid":"skill_freq"})
+    # skill_freq = skill_freq[skill_freq['skill_freq'] > 20]    
+    # df_sub = df_sub.merge(skill_freq, on='skillclusterid',how='right')
+    # del df_sub['skill_freq']
+    # #del skill_freq
 
     #calculate bgtjobid frequency weights (a bgtjobid appearing three times is weighted 1/3 for each observation)
     bgtjobid_freq = df_sub[['bgtjobid']]
@@ -137,10 +137,10 @@ for yr in years:
     num_org = i_org.shape[1]
     i_org = sparse.coo_matrix(i_org)
 
-    i_skill = pd.get_dummies(df_sub['skillclusterid'],sparse=True)
-    skill_names = pd.DataFrame(i_skill.columns.values)
-    num_skill = i_skill.shape[1]
-    i_skill = sparse.coo_matrix(i_skill)
+    # i_skill = pd.get_dummies(df_sub['skillclusterid'],sparse=True)
+    # skill_names = pd.DataFrame(i_skill.columns.values)
+    # num_skill = i_skill.shape[1]
+    # i_skill = sparse.coo_matrix(i_skill)
 
     i_msa = pd.get_dummies(df_sub['msa'],sparse=True)
     msa_names = pd.DataFrame(i_msa.columns.values) 
@@ -156,9 +156,10 @@ for yr in years:
     exp = sparse.coo_matrix(df_sub['exp'])
     exp = sparse.coo_matrix.transpose(exp)
 
+    ####################################base model
     #weight the observations
     #concat
-    X = sparse.hstack([i_soc,i_org,i_skill,i_msa,edu,exp])
+    X = sparse.hstack([edu,exp,i_msa,i_soc,i_org])
     X = sparse.csr_matrix(X)
 
     ifw = sparse.csr_matrix(df_sub['ifw'])
@@ -174,39 +175,142 @@ for yr in years:
     #X = df_concat.to_numpy()
     reg = LinearRegression().fit(X,y)
 
-    #save soc,org, and skill coefficients to separate dataframes 
-    soc_betas = pd.DataFrame(reg.coef_[0:num_soc])
-    soc_betas.rename(columns={0:'soc_FEs'},inplace=True)
-    soc_names.rename(columns={0:'soc'},inplace=True)
-    soc_FEs = pd.concat([soc_names,soc_betas],axis=1)
+    r2 = reg.score(X,y)
+    del X
+    print("Edu + exp + msa + soc + org:")
+    print(r2)
 
-    org_betas = pd.DataFrame(reg.coef_[num_soc:(num_soc+num_org)])
-    org_betas.rename(columns={0:'org_FEs'},inplace=True)
-    org_names.rename(columns={0:'orgid'},inplace=True)
-    org_FEs = pd.concat([org_names,org_betas],axis=1)
-    
-    skill_betas = pd.DataFrame(reg.coef_[(num_soc+num_org):(num_soc+num_org+num_skill)])
-    skill_betas.rename(columns={0:'skill_FEs'},inplace=True)
-    skill_names.rename(columns={0:'skillclusterid'},inplace=True)
-    skill_FEs = pd.concat([skill_names,skill_betas],axis=1)
-    
-    msa_betas = pd.DataFrame(reg.coef_[(num_soc+num_org+num_skill):(num_soc+num_org+num_skill+num_msa)])
-    msa_betas.rename(columns={0:'msa_FEs'},inplace=True)
-    msa_names.rename(columns={0:'msa'},inplace=True)
-    msa_FEs = pd.concat([msa_names,msa_betas],axis=1)
-    
-    #merge on the FEs to the final dataframe
-    df_sub = df_sub.merge(soc_FEs,on='soc',how='left')
-    df_sub = df_sub.merge(org_FEs,on='orgid',how='left')
-    df_sub = df_sub.merge(skill_FEs,on='skillclusterid',how='left')
-    df_sub = df_sub.merge(msa_FEs,on='msa',how='left')
+    # ############################################+msa
+    # #weight the observations
+    # #concat
+    # X = sparse.hstack([i_msa,edu,exp])
+    # X = sparse.csr_matrix(X)
 
-    #merge on the FEs and coefficients  
-    df_sub['intercept'] = reg.intercept_
-    df_sub['edu_beta'] = reg.coef_[-2]    
-    df_sub['exp_beta'] = reg.coef_[-1]        
+    # ifw = sparse.csr_matrix(df_sub['ifw'])
+    # for i in xrange(ifw.shape[1]):
+    #     X[i,] = X[i,] * ifw[0,i]
     
-    df_sub.to_csv('~/bg_skills/BGxAKM/temp/complete_FEs_' + str(yr) + '_20_ifw.csv',index=False)
+    # X = sparse.coo_matrix(X)
+    # #df_concat = pd.concat([i_soc,i_org,i_skill,i_msa,i_year,df['edu'],df['exp']],axis=1)
+
+    # #sklearn ols
+    # y = df_sub['ln_avgwage'].to_numpy()
+    # #X = sparse.coo_matrix(df_concat)
+    # #X = df_concat.to_numpy()
+    # reg = LinearRegression().fit(X,y)
+
+    # r2 = reg.score(X,y)
+    # del X
+    # print("Edu + exp + msa:")
+    # print(r2)
+
+    # ##############################################+soc
+    # #weight the observations
+    # #concat
+    # X = sparse.hstack([i_soc,i_msa,edu,exp])
+    # X = sparse.csr_matrix(X)
+
+    # ifw = sparse.csr_matrix(df_sub['ifw'])
+    # for i in xrange(ifw.shape[1]):
+    #     X[i,] = X[i,] * ifw[0,i]
+    
+    # X = sparse.coo_matrix(X)
+    # #df_concat = pd.concat([i_soc,i_org,i_skill,i_msa,i_year,df['edu'],df['exp']],axis=1)
+
+    # #sklearn ols
+    # y = df_sub['ln_avgwage'].to_numpy()
+    # #X = sparse.coo_matrix(df_concat)
+    # #X = df_concat.to_numpy()
+    # reg = LinearRegression().fit(X,y)
+
+    # r2 = reg.score(X,y)
+    # del X
+    # print("Edu + exp + msa + soc:")
+    # print(r2)
+
+
+    # ##############################################+firm
+    # #weight the observations
+    # #concat
+    # X = sparse.hstack([i_org,i_soc,i_msa,edu,exp])
+    # X = sparse.csr_matrix(X)
+
+    # ifw = sparse.csr_matrix(df_sub['ifw'])
+    # for i in xrange(ifw.shape[1]):
+    #     X[i,] = X[i,] * ifw[0,i]
+    
+    # X = sparse.coo_matrix(X)
+    # #df_concat = pd.concat([i_soc,i_org,i_skill,i_msa,i_year,df['edu'],df['exp']],axis=1)
+
+    # #sklearn ols
+    # y = df_sub['ln_avgwage'].to_numpy()
+    # #X = sparse.coo_matrix(df_concat)
+    # #X = df_concat.to_numpy()
+    # reg = LinearRegression().fit(X,y)
+
+    # r2 = reg.score(X,y)
+    # del X
+    # print("Edu + exp + msa + soc + org:")
+    # print(r2)
+
+    
+    # ##########################################full model
+    # #weight the observations
+    # #concat
+    # X = sparse.hstack([i_soc,i_org,i_skill,i_msa,edu,exp])
+    # X = sparse.csr_matrix(X)
+
+    # ifw = sparse.csr_matrix(df_sub['ifw'])
+    # for i in xrange(ifw.shape[1]):
+    #     X[i,] = X[i,] * ifw[0,i]
+    
+    # X = sparse.coo_matrix(X)
+    # #df_concat = pd.concat([i_soc,i_org,i_skill,i_msa,i_year,df['edu'],df['exp']],axis=1)
+
+    # #sklearn ols
+    # y = df_sub['ln_avgwage'].to_numpy()
+    # #X = sparse.coo_matrix(df_concat)
+    # #X = df_concat.to_numpy()
+    # reg = LinearRegression().fit(X,y)
+
+    # r2 = reg.score(X,y)
+    # del X
+    # print("Full Model:")
+    # print(r2)
+    
+    # #save soc,org, and skill coefficients to separate dataframes 
+    # soc_betas = pd.DataFrame(reg.coef_[0:num_soc])
+    # soc_betas.rename(columns={0:'soc_FEs'},inplace=True)
+    # soc_names.rename(columns={0:'soc'},inplace=True)
+    # soc_FEs = pd.concat([soc_names,soc_betas],axis=1)
+
+    # org_betas = pd.DataFrame(reg.coef_[num_soc:(num_soc+num_org)])
+    # org_betas.rename(columns={0:'org_FEs'},inplace=True)
+    # org_names.rename(columns={0:'orgid'},inplace=True)
+    # org_FEs = pd.concat([org_names,org_betas],axis=1)
+    
+    # skill_betas = pd.DataFrame(reg.coef_[(num_soc+num_org):(num_soc+num_org+num_skill)])
+    # skill_betas.rename(columns={0:'skill_FEs'},inplace=True)
+    # skill_names.rename(columns={0:'skillclusterid'},inplace=True)
+    # skill_FEs = pd.concat([skill_names,skill_betas],axis=1)
+    
+    # msa_betas = pd.DataFrame(reg.coef_[(num_soc+num_org+num_skill):(num_soc+num_org+num_skill+num_msa)])
+    # msa_betas.rename(columns={0:'msa_FEs'},inplace=True)
+    # msa_names.rename(columns={0:'msa'},inplace=True)
+    # msa_FEs = pd.concat([msa_names,msa_betas],axis=1)
+    
+    # #merge on the FEs to the final dataframe
+    # df_sub = df_sub.merge(soc_FEs,on='soc',how='left')
+    # df_sub = df_sub.merge(org_FEs,on='orgid',how='left')
+    # df_sub = df_sub.merge(skill_FEs,on='skillclusterid',how='left')
+    # df_sub = df_sub.merge(msa_FEs,on='msa',how='left')
+
+    # #merge on the FEs and coefficients  
+    # df_sub['intercept'] = reg.intercept_
+    # df_sub['edu_beta'] = reg.coef_[-2]    
+    # df_sub['exp_beta'] = reg.coef_[-1]        
+    
+    # df_sub.to_csv('~/bg_skills/BGxAKM/temp/complete_FEs_' + str(yr) + '_20_ifw.csv',index=False)
 
 
 
