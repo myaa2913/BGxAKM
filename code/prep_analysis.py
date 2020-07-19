@@ -59,7 +59,7 @@ df = df.drop_duplicates(subset=['bgtjobid','skillclusterid'])
 
 #save dataframe as a pkl that can easily be reloaded
 df.to_csv('~/bg_skills/BGxAKM/temp/wage_long.csv',index=False)
-df.to_pickle('~/bg_skills/BGxAKM/temp/wage_long.pkl')
+#df.to_pickle('~/bg_skills/BGxAKM/temp/wage_long.pkl')
 
 #COMMENT OUT LATER
 #df = pd.read_csv('~/bg_skills/BGxAKM/temp/wage_long.csv',nrows=1000000)
@@ -75,7 +75,7 @@ skillclusterid_cross.to_csv('~/bg_skills/BGxAKM/temp/skillclusterid_cross.csv',i
 del df['skillcluster']
 
 
-years = [2010,2011,2012,2013,2014,2015,2016,2017,2018]
+years = [2015,2016,2017,2018]
 
 for yr in years:
 
