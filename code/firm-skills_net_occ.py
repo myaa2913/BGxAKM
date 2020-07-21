@@ -2,40 +2,39 @@ import csv
 from sklearn.metrics.pairwise import cosine_similarity
 import numpy as np
 
-outfile = open('/Users/matthewcorritore/Dropbox/BG_Skills/temp/firm_skill_net_occ.csv','w')
+outfile = open('firm_skill_net_occ.csv','w')
 write = csv.writer(outfile)
 
 #this reads and loops through each row of the input csv file
-with open('/Users/matthewcorritore/Dropbox/BG_Skills/temp/org_soc_combined.csv', 'r') as infile:
+counter = 0
+header = None
+with open('org_soc_combined.csv', 'r') as infile:
     read = csv.reader(infile, delimiter = ',')
 
-	#this command just skips past the first line of a csv file, which typically contains a header with variable names
-    next(read)
-
-	#now we loop through each row in the csv file
+    #now we loop through each row in the csv file
     for row in read:
-        orgid = row[607]
-        soc = row[608]
-        year = row[609]
-        num_jobs = row[610]
+        counter+=1
 
-        vec1 = np.array([row[0:607]]).astype(np.float)
-        vec2 = np.array([row[611:len(row)]]).astype(np.float)
+        if counter==1:
+            header = row[0:634]
+            write.writerow(header)
+            
+        if counter>1:
 
-        net_mean_occ = np.subtract(vec1, vec2)
+            orgid = row[634]
+            soc = row[635]
+            year = row[636]
+            num_jobs = row[637]
 
-        #net_mean_occ = net_mean_occ.tolist()
+            vec1 = np.array([row[0:634]]).astype(np.float)
+            vec2 = np.array([row[638:len(row)]]).astype(np.float)
 
-        #print(net_mean_occ)
+            net_mean_occ = np.subtract(vec1, vec2)
+            net_mean_occ = np.absolute(net_mean_occ)
 
-        ids = np.array([orgid,soc,year,num_jobs])
+            ids = np.array([orgid,soc,year,num_jobs])
 
-        #ids.extend(net_mean_occ)
+            toWrite = np.append(net_mean_occ.ravel(),ids)
 
-        toWrite = np.append(ids,net_mean_occ)
-
-        toWrite = toWrite.tolist()
-
-        #toWrite = [orgid,soc,year,num_jobs,net_mean_occ]
-        write.writerow(toWrite)
+            write.writerow(toWrite)
 infile.close()
